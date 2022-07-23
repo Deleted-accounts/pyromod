@@ -72,7 +72,6 @@ class Client():
         if not listener or listener['future'].done():
             return
         
-        listener['future'].set_exception(ListenerCanceled())
         self.clear_listener(chat_id, listener['future'])
         
 @patch(pyrogram.handlers.message_handler.MessageHandler)
