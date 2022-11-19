@@ -40,7 +40,7 @@ class Client():
     
     @patchable
     async def listen(self, chat_id, filters=None, timeout=None):
-        if type(chat_id) != int:
+        if not isinstance(chat_id, int):
             chat = await self.get_chat(chat_id)
             chat_id = chat.id
         
@@ -61,16 +61,14 @@ class Client():
         return response
    
     @patchable
-    def clear_listener(self, chat_id, future):
-        if chat_id in self.listening and future == self.listening[chat_id]["future"]:
-            self.listening.pop(chat_id, None)
+    def clear_listener(self, chat_id):
+        try:
+            self.listening.pop(chat_id)
+        except KeyError:
+            pass
      
     @patchable
     def cancel_listener(self, chat_id):
-        listener = self.listening.get(chat_id)
-        if not listener or listener['future'].done():
-            return
-        
         self.clear_listener(chat_id, listener['future'])
         
 @patch(pyrogram.handlers.message_handler.MessageHandler)
